@@ -1,5 +1,7 @@
 venv
+flaskr/AS_Experimento1.db
 flaskr/__pycache__
+flaskr/modelos/__pycache__
 GestorOfertas/__pycache__
 GestorRecursosTI/__pycache__
 MotorEmparejamiento/__pycache__

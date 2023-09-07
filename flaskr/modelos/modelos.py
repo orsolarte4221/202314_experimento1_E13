@@ -23,7 +23,7 @@ class Oferta(db.Model):
     habilidad = db.Column(db.Enum(Habilidad))
     calificacionRequerida = db.Column(db.Integer)
     perfil = db.column(db.Enum(Perfil))
-    idRecursoTI = db.Column(db.Integer)
+    idRecursoTI = db.Column(db.Integer, nullable=True)
     
 
 class RecursoTI(db.Model):
@@ -31,11 +31,12 @@ class RecursoTI(db.Model):
     nombreRecurso = db.Column(db.String(128))
     perfilRecurso = db.Column(db.Enum(Perfil))
     habilidades = db.relationship('Habilidades')
-
+    
 class Habilidades(db.Model):
     id = db.Column(db.Integer, primary_key = True)
     nombreHabilidad = db.Column(db.Enum(Habilidad))
     calificacionHabilidad = db.Column(db.Integer)
+    recursoti=db.Column(db.Integer, db.ForeignKey('recursoTI.id'))
     
 
 class Status(enum.Enum):

@@ -1,5 +1,5 @@
 from flaskr import create_app
-from .modelos import db, Oferta, Habilidad, Perfil
+from .modelos import db, Oferta, Habilidad, Perfil, RecursoTI
 
 app = create_app('default')
 app_context = app.app_context()
@@ -10,3 +10,5 @@ db.create_all()
 miPrimerOferta = Oferta(descripcion="Desarrollador Python", habilidad=Habilidad.PYTHON, calificacionRequerida=3, perfil=Perfil.BACKEND)
 db.session.add(miPrimerOferta)
 db.session.commit()
+
+#recursoTi1 = RecursoTI(nombreRecurso="Gustavo", perfilRecurso=Perfil.BACKEND)

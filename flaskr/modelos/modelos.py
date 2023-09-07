@@ -22,7 +22,7 @@ class Oferta(db.Model):
     descripcion = db.Column(db.String(256))
     habilidad = db.Column(db.Enum(Habilidad))
     calificacionRequerida = db.Column(db.Integer)
-    perfil = db.column(db.Enum(Perfil))
+    perfil = db.Column(db.Enum(Perfil))
     idRecursoTI = db.Column(db.Integer, nullable=True)
     
 

@@ -29,6 +29,17 @@ class VistaVotacion(Resource):
 
         #Logica de  Validador
 
+        #Envio de mensaje a la cola del log en formato json
+
+        log = {
+            "idOferta" : 2,
+            "falloHabilidad" : False,
+            "falloPerfil" : False,
+            "falloCalificacion" : False,
+            "idRecursoTI" : 3,
+            "idMotor" : 1,
+            "statusMotor" : "Normal" 
+        }
 
 
         #Retornar IdRecursoIT

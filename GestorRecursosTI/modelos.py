@@ -20,25 +20,38 @@ class Habilidad(enum.Enum):
    ANGULAR = 4
    JAVA = 5
 
+class EnumADiccionario(fields.Field):
+    def _serialize(self, value, attr, obj, **kwargs):
+        if value is None:
+            return None
+        return {"llave": value.name, "valor": value.value}
+
 
 class RecursoTI(db.Model):
     id = db.Column(db.Integer, primary_key = True)
     nombreRecurso = db.Column(db.String(128))
     perfilRecurso = db.Column(db.Enum(Perfil))
     habilidades = db.relationship('Habilidades')
-
-
-class EnumADiccionario(fields.Field):
-    def _serialize(self, value, attr, obj, **kwargs):
-        if value is None:
-            return None
-        return {"llave": value.name, "valor": value.value}
     
+class Habilidades(db.Model):
+    id = db.Column(db.Integer, primary_key = True)
+    nombreHabilidad = db.Column(db.Enum(Habilidad))
+    calificacionHabilidad = db.Column(db.Integer)
+    recursoti=db.Column(db.Integer, db.ForeignKey('recursoTI.id'))
+
+class HabilidadesSchema(SQLAlchemyAutoSchema):
+    nombreHabilidad = EnumADiccionario(attribute=("nombreHabilidad"))
+    class Meta:
+        model = Habilidades
+        include_relationships = True
+        load_instance = True      
+
 
 class RecursoTISchema(SQLAlchemyAutoSchema):
-    habilidad = EnumADiccionario(attribute=("habilidad"))
-    perfil = EnumADiccionario(attribute=("perfil"))
+    perfilRecurso = EnumADiccionario(attribute=("perfilRecurso"))
+    habilidades = fields.Nested('HabilidadesSchema', many=True)   
+
     class Meta:
          model = RecursoTI
          include_relationships = True
-         load_instance = True
+         load_instance = True   

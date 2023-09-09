@@ -10,6 +10,7 @@ app_context = app.app_context()
 app_context.push()
 
 api = Api(app)
+contadorEjecucion = 1
 
 class VistaEmparejamiento(Resource):
     def get(self):
@@ -28,7 +29,7 @@ class VistaEmparejamiento(Resource):
 
             recursos_ti = response.json()
             recursoEncontrado=False
-            contadorEjecucion = 1
+            
             fallaIntroducida = False
             if contadorEjecucion%5 == 0:
                 fallaIntroducida = True

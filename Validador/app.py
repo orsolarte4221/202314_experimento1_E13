@@ -18,6 +18,8 @@ app_context.push()
 
 api = Api(app)
 
+contadorEjecucion = 1
+
 class VistaVotacion(Resource):
     def get(self):
 
@@ -26,56 +28,67 @@ class VistaVotacion(Resource):
         data = request.get_json()
 
         #Llamado a Motor Emparejamiento 1
-        motor1 = requests.get('http://127.0.0.1:5001/emparejamiento', json=data)
+        motor1 = requests.get('http://127.0.0.1:7901/emparejamiento', json=data)
 
         #Llamado a Motor Emparejamiento 2
-        motor2 = requests.get('http://127.0.0.1:5001/emparejamiento', json=data)
+        motor2 = requests.get('http://127.0.0.1:7902/emparejamiento', json=data)
 
         #Llamado a Motor Emparejamiento 3
-        motor3 = requests.get('http://127.0.0.1:5001/emparejamiento', json=data)
+        motor3 = requests.get('http://127.0.0.1:7903/emparejamiento', json=data)
 
 
         #Logica de  Validador
 
-        def encontrar_diferente(motor1_id,motor2_id,motor3_id):
+        def encontrar_recurso(motor1_id,motor2_id,motor3_id):
             if motor1_id == motor2_id and motor2_id != motor3_id:
-                return ["Normal","Normal","Fallando"]
+                motor1['statusMotor':'Normal']
+                motor2['statusMotor':'Normal']
+                motor3['statusMotor':'Fallando']
+                return motor1_id
             elif motor1_id == motor3_id and motor2_id != motor3_id:
-                return ["Normal","Fallando","Normal"]
+                motor1['statusMotor':'Normal']
+                motor2['statusMotor':'Fallando']
+                motor3['statusMotor':'Normal']                
+                return motor1_id
             else:
-                return ["Fallando","Normal","Normal"]
+                motor1['statusMotor':'Fallando']
+                motor2['statusMotor':'Normal']
+                motor3['statusMotor':'Normal']    
+                return motor2_id
             
         motor1_id = motor1.json()['IdRecurso']
         motor2_id = motor2.json()['IdRecurso']
         motor3_id = motor3.json()['IdRecurso']
 
-        status = encontrar_diferente(motor1_id,motor2_id,motor3_id)
+        idRecursoIT = encontrar_recurso(motor1_id,motor2_id,motor3_id)
 
+        for motor in [motor1,motor2,motor3]:
+           
 
+            #Envio de mensaje a la cola del log en formato json
+            log = {
+                "idOferta" : data['idOferta'],
+                "idRecursoTI" : motor['IdRecurso'],
+                "idMotor" : motor["IdentificadorMotor"],
+                "statusMotor" : motor['statusMotor'],
+                "idEjecucionValidador" : contadorEjecucion,
+                "fallaIntroducida":motor['fallaIntroducida']
+            }
+            #convertir log en una tupla para que vaya a la cola
+            args=(
+                log("idEjecucionValidador"),
+                log("fallaIntroducida"),
+                log["idOferta"],
+                log["idRecursoTI"],
+                log["idMotor"],
+                log["statusMotor"])
+            #enviar a la cola    
+            notificar_csv.apply_async(args, queue='colaValidacion')
 
-        #Envio de mensaje a la cola del log en formato json
-        log = {
-            "idOferta" : 2,
-            "idRecursoTI" : 3,
-            "idMotor" : 1,
-            "statusMotor" : "Normal",
-            "idEjecucionValidador" : 1,
-            "fallaIntroducida":False
-        }
-        #convertir log en una tupla para que vaya a la cola
-        args=(
-            log("idEjecucionValidador"),
-            log("fallaIntroducida"),
-            log["idOferta"],
-            log["idRecursoTI"],
-            log["idMotor"],
-            log["statusMotor"])
-        #enviar a la cola    
-        notificar_csv.apply_async(args, queue='colaValidacion')
-
+        contadorEjecucion+=1
 
         #Retornar IdRecursoIT
-        return "IdRecursoIT" #content.json()
+        return {"idRecursoIT":idRecursoIT} 
     
 #Suponiendo que este microservicio corre en el puerto 5002, al hacer un llamado a ese puerto
 #al endpoint /emparejamiento se ejecutara lo que se encuentra en la vista votacion

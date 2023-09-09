@@ -27,6 +27,7 @@ class VistaVotacion(Resource):
         #en el request a los motores de emparejamiento
         data = request.get_json()
 
+
         #Llamado a Motor Emparejamiento 1
         motor1 = requests.get('http://127.0.0.1:7901/emparejamiento', json=data)
 

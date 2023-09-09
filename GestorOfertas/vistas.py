@@ -12,11 +12,12 @@ class VistaGestorOfertas(Resource):
         #Se crea una nueva oferta
         nueva_oferta = Oferta(perfil=request.json["perfil"], habilidad=request.json["habilidad"],  calificacionRequerida=request.json["calificacionRequerida"], descripcion=request.json["descripcion"])
         
+    
         oferta = request.get_json()
         #Se asigna un recurso a la oferta llamando al validador
         idRecursoTIAsignado = requests.get('http://127.0.0.1:8901/emparejamiento', oferta)   
 
-        if idRecursoTIAsignado.json()['IdRecursoIT']:
+        if 'IdRecursoIT' in idRecursoTIAsignado.json():
             nueva_oferta.idRecursoTI=idRecursoTIAsignado.json()['IdRecursoIT']
         else:
             #No se encontro un recureso para la oferta

@@ -7,7 +7,7 @@ celery_app= Celery(__name__, broker='redis://localhost:6379/0')
 # Funcion registrar log recibe los parámetros y los guarda en un archivo separado por comas (csv)
 def notificar_csv(idOferta, falloHabilidad, falloPerfil, falloCalificacion, idRecursoTI, idMotor, statusMotor):
     # Obtener la fecha y hora actual en GMT-5
-    fecha_hora_actual = datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=-5)))
+    fecha_hora_actual = datetime.datetime.now()
     
     # Crear una cadena con los nombres de las columnas
     nombres_columnas = "Fecha_Hora,IdOferta,FalloHabilidad,FalloPerfil,FalloCalificacion,IdRecursoTI,IdMotor,StatusMotor"

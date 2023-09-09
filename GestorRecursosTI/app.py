@@ -1,4 +1,4 @@
-from flaskr import create_app
+from GestorRecursosTI import create_app
 from flask_restful import Resource, Api
 from flask import Flask, request
 from .modelos import *

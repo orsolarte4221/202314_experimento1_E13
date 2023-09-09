@@ -1,3 +1,4 @@
+from pydoc import describe
 from flask import request
 from .modelos import db, RecursoTI, RecursoTISchema, Perfil, Habilidad , Habilidades
 from flask_restful import Resource
@@ -28,10 +29,14 @@ class VistaRecursoTI(Resource):
         # Agregar y guardar el nuevo recurso en la base de datos
         db.session.add(nuevo_recurso)
         db.session.commit()
-        return nuevo_recurso, 201
+        return recursoTI_schema.dump(nuevo_recurso), 201
        
     def get(self):
-        return [recursoTI_schema.dump(RecursoTi) for RecursoTi in RecursoTI.query.all()]   
+        # Consulta los recursos de TI y ordénalos por nombre en orden descendente
+        recursos_ti = RecursoTI.query.order_by(RecursoTI.id.asc()).all()    
+
+        # Serializa y devuelve los resultados
+        return [recursoTI_schema.dump(recurso) for recurso in recursos_ti]
         
 
 

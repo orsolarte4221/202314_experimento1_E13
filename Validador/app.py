@@ -28,13 +28,13 @@ class VistaVotacion(Resource):
         data = request.get_json()
 
         #Llamado a Motor Emparejamiento 1
-        motor1 = requests.get('http://127.0.0.1:5001/emparejamiento', json=data)
+        motor1 = requests.get('http://127.0.0.1:7901/emparejamiento', json=data)
 
         #Llamado a Motor Emparejamiento 2
-        motor2 = requests.get('http://127.0.0.1:5001/emparejamiento', json=data)
+        motor2 = requests.get('http://127.0.0.1:7902/emparejamiento', json=data)
 
         #Llamado a Motor Emparejamiento 3
-        motor3 = requests.get('http://127.0.0.1:5001/emparejamiento', json=data)
+        motor3 = requests.get('http://127.0.0.1:7903/emparejamiento', json=data)
 
 
         #Logica de  Validador

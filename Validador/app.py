@@ -2,6 +2,14 @@ from Validador import create_app
 from flask_restful import Resource, Api
 from flask import Flask, request
 import requests
+from celery import Celery
+
+#Integracion con la cola de mensajes
+celery_app= Celery(__name__, broker='redis://localhost:6379/0')
+@celery_app.task(name='notificar')
+def notificar_csv(*args):
+    pass
+
 
 
 app = create_app('default')
@@ -30,7 +38,6 @@ class VistaVotacion(Resource):
         #Logica de  Validador
 
         #Envio de mensaje a la cola del log en formato json
-
         log = {
             "idOferta" : 2,
             "falloHabilidad" : False,
@@ -40,6 +47,17 @@ class VistaVotacion(Resource):
             "idMotor" : 1,
             "statusMotor" : "Normal" 
         }
+        #convertir log en una tupla para que vaya a la cola
+        args=(
+            log["idOferta"],
+            log["falloHabilidad"],
+            log["falloPerfil"],
+            log["falloCalificacion"],
+            log["idRecursoTI"],
+            log["idMotor"],
+            log["statusMotor"])
+        #enviar a la cola    
+        #notificar_csv.apply_async(args, queue='colaValidacion')
 
 
         #Retornar IdRecursoIT

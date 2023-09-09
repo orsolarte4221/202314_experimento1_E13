@@ -37,12 +37,25 @@ class VistaVotacion(Resource):
 
         #Logica de  Validador
 
+        def encontrar_diferente(motor1_id,motor2_id,motor3_id):
+            if motor1_id == motor2_id and motor2_id != motor3_id:
+                return ["Normal","Normal","Fallando"]
+            elif motor1_id == motor3_id and motor2_id != motor3_id:
+                return ["Normal","Fallando","Normal"]
+            else:
+                return ["Fallando","Normal","Normal"]
+            
+        motor1_id = motor1.json()['IdRecurso']
+        motor2_id = motor2.json()['IdRecurso']
+        motor3_id = motor3.json()['IdRecurso']
+
+        status = encontrar_diferente(motor1_id,motor2_id,motor3_id)
+
+
+
         #Envio de mensaje a la cola del log en formato json
         log = {
             "idOferta" : 2,
-            "falloHabilidad" : False,
-            "falloPerfil" : False,
-            "falloCalificacion" : False,
             "idRecursoTI" : 3,
             "idMotor" : 1,
             "statusMotor" : "Normal",
@@ -54,9 +67,6 @@ class VistaVotacion(Resource):
             log("idEjecucionValidador"),
             log("fallaIntroducida"),
             log["idOferta"],
-            log["falloHabilidad"],
-            log["falloPerfil"],
-            log["falloCalificacion"],
             log["idRecursoTI"],
             log["idMotor"],
             log["statusMotor"])

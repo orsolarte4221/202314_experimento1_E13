@@ -18,7 +18,7 @@ class VistaEmparejamiento(Resource):
         calificacionRequerida = oferta.json()["calificacionRequerida"]
         perfilRequerido = oferta.json()["perfil"]
 
-        if habilidadRequerida is not None and calificacionRequerida is not None and perfilRequerido is not None:
+        if habilidadRequerida is None or calificacionRequerida is None or perfilRequerido is None:
              return "Error en la solicitud, informacion incompleta", 404
         else:
             response = requests.get('http://127.0.0.1:5000/recursosTI')

@@ -19,9 +19,9 @@ class VistaEmparejamiento(Resource):
         if oferta.status_code == 404:
             return "No existe la oferta", 404
         else:
-            habilidad = oferta.json()["habilidad"]
+            habilidadRequerida = oferta.json()["habilidad"]
             calificacionRequerida = oferta.json()["calificacionRequerida"]
-            perfil = random.randint(1, 4)
+            perfilRequerido = oferta.json()["perfil"]
 
             response = requests.get('http://127.0.0.1:5000/recursosTI')
 
@@ -30,13 +30,51 @@ class VistaEmparejamiento(Resource):
 
             recursos_ti = response.json()
 
-            primer_recurso = next((recurso for recurso in recursos_ti if recurso.get("perfil") == perfil and recurso.get("habilidad") == habilidad and recurso.get("calificacionRequerida", 0) <= calificacionRequerida), None)
+
+            recursoEncontrado=False
+            contadorEjecucion = 1
+            fallaIntroducida = False
+            if contadorEjecucion%5 == 0:
+                fallaIntroducida = True
+            
+            if not fallaIntroducida:
+                #Logica para encontrar recurso adecuado
+                for recurso in recursos_ti:
+                    perfil = recurso['perfilRecurso']
+                    habilidades = recurso['habilidades']
+                    if perfil == perfilRequerido:
+                        for habilidad in habilidades:
+                            if habilidad['nombreHabilidad'] == habilidadRequerida and habilidad['calificacionHabilidad'] == calificacionRequerida:
+                                recursoEncontrado = True
+                                break
+                        
+                        if recursoEncontrado:
+                            primer_recurso = recurso
+                            contadorEjecucion+=1
+                            break
+            else:
+                #Logica para introducir fallo
+                for recurso in recursos_ti:
+                    perfil = recurso['perfilRecurso']
+                    habilidades = recurso['habilidades']
+                    if perfil != perfilRequerido:
+                        recursoEncontrado = True
+                    for habilidad in habilidades:
+                        if habilidad['nombreHabilidad'] != habilidadRequerida or habilidad['calificacionHabilidad'] == calificacionRequerida:
+                            recursoEncontrado = True
+                            break
+                    
+                    if recursoEncontrado:
+                        primer_recurso = recurso
+                        contadorEjecucion+=1
+                        break
+
 
             if primer_recurso:
-                recurso_id = primer_recurso.get("id")
-                return {"IdRecurso":recurso_id, "IdentificadorMotor":1}, 200
+                recurso_id = primer_recurso['id']
+                return {"IdRecurso":recurso_id, "IdentificadorMotor":3, "fallaIntroducida": fallaIntroducida}, 200
             else:
-                return {"IdRecurso":"No se encontraron recursos para la oferta", "IdentificadorMotor":1}, 404
+                return {"IdRecurso":"No se encontraron recursos para la oferta", "IdentificadorMotor":3}, 404
 
 
 api.add_resource(VistaEmparejamiento, '/emparejamiento')

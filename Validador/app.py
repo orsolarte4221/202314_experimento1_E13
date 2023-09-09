@@ -45,10 +45,14 @@ class VistaVotacion(Resource):
             "falloCalificacion" : False,
             "idRecursoTI" : 3,
             "idMotor" : 1,
-            "statusMotor" : "Normal" 
+            "statusMotor" : "Normal",
+            "idEjecucionValidador" : 1,
+            "fallaIntroducida":False
         }
         #convertir log en una tupla para que vaya a la cola
         args=(
+            log("idEjecucionValidador"),
+            log("fallaIntroducida"),
             log["idOferta"],
             log["falloHabilidad"],
             log["falloPerfil"],
@@ -57,7 +61,7 @@ class VistaVotacion(Resource):
             log["idMotor"],
             log["statusMotor"])
         #enviar a la cola    
-        #notificar_csv.apply_async(args, queue='colaValidacion')
+        notificar_csv.apply_async(args, queue='colaValidacion')
 
 
         #Retornar IdRecursoIT

@@ -4,7 +4,6 @@ from flask import Flask, request
 import requests
 import json
 import random
-import json
 
 app = create_app('default')
 app_context = app.app_context()
@@ -15,22 +14,19 @@ api = Api(app)
 class VistaEmparejamiento(Resource):
     def get(self):
         oferta = request.get_json()
+        habilidadRequerida = oferta.json()["habilidad"]
+        calificacionRequerida = oferta.json()["calificacionRequerida"]
+        perfilRequerido = oferta.json()["perfil"]
 
-        if oferta.status_code == 404:
-            return "No existe la oferta", 404
+        if habilidadRequerida is not None and calificacionRequerida is not None and perfilRequerido is not None:
+             return "Error en la solicitud, informacion incompleta", 404
         else:
-            habilidadRequerida = oferta.json()["habilidad"]
-            calificacionRequerida = oferta.json()["calificacionRequerida"]
-            perfilRequerido = oferta.json()["perfil"]
-
             response = requests.get('http://127.0.0.1:5000/recursosTI')
 
             if response.status_code == 404:
                 return "No se encontraron recursos", 404
 
             recursos_ti = response.json()
-
-
             recursoEncontrado=False
             contadorEjecucion = 1
             fallaIntroducida = False

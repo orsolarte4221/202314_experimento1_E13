@@ -4,7 +4,7 @@ from flask import Flask, request
 import requests
 import json
 import random
-
+import json
 
 app = create_app('default')
 app_context = app.app_context()
@@ -12,9 +12,28 @@ app_context.push()
 
 api = Api(app)
 
+
+# definir la url global
+
+def cargar_configuracion():
+    try:
+        with open('config.json', 'r') as archivo_config:
+            configuracion = json.load(archivo_config)
+            return configuracion
+    except FileNotFoundError:
+        print("El archivo de configuración 'config.json' no se encontró.")
+        return None
+
+configuracion = cargar_configuracion()
+if configuracion:
+    URL_GLOBAL = configuracion.get('url')
+else:
+    URL_GLOBAL = 'http://127.0.0.1:5000/'
+
+
 class VistaEmparejamiento1(Resource):
-    def post(self, id_oferta):
-        oferta = requests.get('http://127.0.0.1:5000/oferta/{}'.format(id_oferta))
+    def get(self, id_oferta):
+        oferta = requests.get(URL_GLOBAL + '/oferta/{}'.format(id_oferta))
 
         if oferta.status_code == 404:
             return "No existe la oferta", 404
@@ -23,7 +42,7 @@ class VistaEmparejamiento1(Resource):
             calificacionRequerida = oferta.json()["calificacionRequerida"]
             perfil = oferta.json()["perfil"]
 
-            response = requests.get('http://127.0.0.1:5000/recursosTI')
+            response = requests.get(URL_GLOBAL + '/recursosTI')
 
             if response.status_code == 404:
                 return "No se encontraron recursos", 404
@@ -39,11 +58,11 @@ class VistaEmparejamiento1(Resource):
                 return {"IdRecurso":"No se encontraron recursos para la oferta", "IdentificadorMotor":1}, 404
 
 
-api.add_resource(VistaEmparejamiento1, '/oferta/<int:id_oferta>/emparejamiento1')
+api.add_resource(VistaEmparejamiento1, '/emparejamiento1')
 
 class VistaEmparejamiento2(Resource):
-    def post(self, id_oferta):
-        oferta = requests.get('http://127.0.0.1:5000/oferta/{}'.format(id_oferta))
+    def get(self, id_oferta):
+        oferta = requests.get(URL_GLOBAL + '/oferta/{}'.format(id_oferta))
 
         if oferta.status_code == 404:
             return "No existe la oferta", 404
@@ -52,7 +71,7 @@ class VistaEmparejamiento2(Resource):
             calificacionRequerida = oferta.json()["calificacionRequerida"]
             perfil = random.randint(1, 4)
 
-            response = requests.get('http://127.0.0.1:5000/recursosTI')
+            response = requests.get(URL_GLOBAL + '/recursosTI')
 
             if response.status_code == 404:
                 return "No se encontraron recursos", 404
@@ -68,12 +87,12 @@ class VistaEmparejamiento2(Resource):
                 return {"IdRecurso":"No se encontraron recursos para la oferta", "IdentificadorMotor":2}, 404
 
 
-api.add_resource(VistaEmparejamiento2, '/oferta/<int:id_oferta>/emparejamiento2')
+api.add_resource(VistaEmparejamiento2, '/emparejamiento2')
 
 
 class VistaEmparejamiento3(Resource):
-    def post(self, id_oferta):
-        oferta = requests.get('http://127.0.0.1:5000/oferta/{}'.format(id_oferta))
+    def get(self, id_oferta):
+        oferta = requests.get(URL_GLOBAL + '/oferta/{}'.format(id_oferta))
 
         if oferta.status_code == 404:
             return "No existe la oferta", 404
@@ -82,7 +101,7 @@ class VistaEmparejamiento3(Resource):
             calificacionRequerida = oferta.json()["calificacionRequerida"]
             perfil = random.randint(1, 4)
 
-            response = requests.get('http://127.0.0.1:5000/recursosTI')
+            response = requests.get(URL_GLOBAL + '/recursosTI')
 
             if response.status_code == 404:
                 return "No se encontraron recursos", 404
@@ -98,4 +117,4 @@ class VistaEmparejamiento3(Resource):
                 return {"IdRecurso":"No se encontraron recursos para la oferta", "IdentificadorMotor":3}, 404
 
 
-api.add_resource(VistaEmparejamiento3, '/oferta/<int:id_oferta>/emparejamiento3')
+api.add_resource(VistaEmparejamiento3, '/emparejamiento3')

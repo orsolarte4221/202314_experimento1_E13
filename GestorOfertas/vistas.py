@@ -1,4 +1,5 @@
 from flask import request
+import requests
 from .modelos import db, Oferta, OfertaSchema, Perfil, Habilidad
 from flask_restful import Resource
 from sqlalchemy.exc import IntegrityError
@@ -7,20 +8,22 @@ oferta_schema = OfertaSchema()
 
 class VistaGestorOfertas(Resource):
 
-    def post(self, id_oferta):
-        oferta = Oferta.query.get_or_404(id_oferta)
+    def post(self):
+        #Se crea una nueva oferta
+        nueva_oferta = Oferta(perfil=request.json["perfil"], habilidad=request.json["habilidad"],  calificacionRequerida=request.json["calificacionRequerida"], descripcion=request.json["descripcion"])
         
-        if "id_oferta" in request.json.keys():
-            
-            nueva_oferta = Oferta.query.get(request.json["id_oferta"])
-            if nueva_oferta is not None:
-                oferta.append(nueva_oferta)
-                db.session.commit()
-            else:
-                return 'Oferta Erronea',404
-        else: 
-            nueva_oferta = Oferta(id=request.json["id"], perfil=request.json["perfil"], habilidades=request.json["habilidades"],  calificacionRequerida=request.json["calificacionRequerida"], descripción=request.json["descripción"], idRecursoTI=request.json["idRecursoTI"])
-            oferta.append(nueva_oferta)
+        oferta = request.get_json()
+        #Se asigna un recurso a la oferta llamando al validador
+        idRecursoTIAsignado = requests.get('http://127.0.0.1:8901/emparejamiento', oferta)   
+
+        if idRecursoTIAsignado.json()['IdRecursoIT']:
+            nueva_oferta.idRecursoTI=idRecursoTIAsignado.json()['IdRecursoIT']
+        else:
+            #No se encontro un recureso para la oferta
+            print("No se encontro un recureso para la oferta")
+            nueva_oferta.idRecursoTI=None
+
+        db.session.add(nueva_oferta)
         db.session.commit()
         return oferta_schema.dump(nueva_oferta)
        

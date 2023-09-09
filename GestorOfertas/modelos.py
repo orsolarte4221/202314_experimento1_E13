@@ -28,8 +28,6 @@ class Oferta(db.Model):
     perfil = db.Column(db.Enum(Perfil))
     idRecursoTI = db.Column(db.Integer, nullable=True)
 
-
-
 class EnumADiccionario(fields.Field):
     def _serialize(self, value, attr, obj, **kwargs):
         if value is None:

@@ -38,7 +38,7 @@ class VistaVotacion(Resource):
 
 
         #Logica de  Validador
-
+        
         def encontrar_recurso(motor1_id,motor2_id,motor3_id):
             if motor1_id == motor2_id and motor2_id != motor3_id:
                 motor1['statusMotor':'Normal']
@@ -88,7 +88,10 @@ class VistaVotacion(Resource):
         contadorEjecucion+=1
 
         #Retornar IdRecursoIT
-        return {"idRecursoIT":idRecursoIT} 
+        if idRecursoIT.isnumeric():
+            return {"idRecursoIT":idRecursoIT} 
+        else:
+            return {"message":"No hay recursos disponibles para la oferta"}
     
 #Suponiendo que este microservicio corre en el puerto 5002, al hacer un llamado a ese puerto
 #al endpoint /emparejamiento se ejecutara lo que se encuentra en la vista votacion

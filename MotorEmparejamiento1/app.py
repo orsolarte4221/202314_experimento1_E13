@@ -1,4 +1,4 @@
-from MotorEmparejamiento import create_app
+from MotorEmparejamiento1 import create_app
 from flask_restful import Resource, Api
 from flask import Flask, request
 import requests
@@ -12,25 +12,6 @@ app_context.push()
 
 api = Api(app)
 
-
-# definir la url global
-
-def cargar_configuracion():
-    try:
-        with open('config.json', 'r') as archivo_config:
-            configuracion = json.load(archivo_config)
-            return configuracion
-    except FileNotFoundError:
-        print("El archivo de configuración 'config.json' no se encontró.")
-        return None
-
-configuracion = cargar_configuracion()
-if configuracion:
-    URL_GLOBAL = configuracion.get('url')
-else:
-    URL_GLOBAL = 'http://127.0.0.1:5000/'
-
-
 class VistaEmparejamiento(Resource):
     def get(self):
         oferta = request.get_json()
@@ -39,10 +20,10 @@ class VistaEmparejamiento(Resource):
             return "No existe la oferta", 404
         else:
             habilidad = oferta.json()["habilidad"]
-            calificacionRequerida = oferta.json()["calificacion"]
+            calificacionRequerida = oferta.json()["calificacionRequerida"]
             perfil = oferta.json()["perfil"]
 
-            response = requests.get(URL_GLOBAL + '/recursosTI')
+            response = requests.get('http://127.0.0.1:5000/recursosTI')
 
             if response.status_code == 404:
                 return "No se encontraron recursos", 404
@@ -58,4 +39,4 @@ class VistaEmparejamiento(Resource):
                 return {"IdRecurso":"No se encontraron recursos para la oferta", "IdentificadorMotor":1}, 404
 
 
-api.add_resource(VistaEmparejamiento, '/emparejamiento1')
+api.add_resource(VistaEmparejamiento, '/emparejamiento')

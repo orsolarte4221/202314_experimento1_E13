@@ -43,15 +43,11 @@ class Status(enum.Enum):
     FALLANDO = 1
     NORMAL = 2
 
-# class Log(db.Model):
-#     id: db.Column(db.Integer, primary_key = True)
-#     idOferta: db.Column(db.Integer)
-#     falloHabilidad: db.Column(db.Boolean)
-#     falloPerfil: db.Column(db.Boolean)
-#     falloCalificacion: db.Column(db.Boolean)
-#     idRecursoTI: db.Column(db.Integer)
-#     idMotor: db.Column(db.Integer)
-#     statusMotor: db.Column(db.Enum(Status))
-
-
-
+class Log():
+    idOferta: int
+    falloHabilidad:bool
+    falloPerfil:bool
+    falloCalificacion:bool
+    idRecursoTI:int
+    idMotor:int
+    statusMotor:Status  

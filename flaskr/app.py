@@ -1,4 +1,7 @@
 from flaskr import create_app
+from flask_restful import Resource, Api
+from flask import Flask, request
+import requests
 from .modelos import db, Oferta, Habilidad, Perfil, RecursoTI, Habilidades
 
 app = create_app('default')
@@ -7,13 +10,15 @@ app_context.push()
 db.init_app(app)
 db.create_all()
 
-miPrimerOferta = Oferta(descripcion="Desarrollador Python", habilidad=Habilidad.PYTHON, calificacionRequerida=3, perfil=Perfil.BACKEND)
-db.session.add(miPrimerOferta)
-db.session.commit()
+api = Api(app)
 
-recursoTi1 = RecursoTI(nombreRecurso="Gustavo", perfilRecurso=Perfil.BACKEND)
-recursoTi1.habilidades.append(Habilidades(nombreHabilidad=Habilidad.PYTHON, calificacionHabilidad=3))
-recursoTi1.habilidades.append(Habilidades(nombreHabilidad=Habilidad.JAVA, calificacionHabilidad=2))
 
-db.session.add(recursoTi1)
-db.session.commit()
+# Ejemplo! Esto puede ser Borrado después
+#Para que el ejemplo funcione esto debe estar corriendo en el puerto 5001
+class VistaPrincipal(Resource):
+    def get(self):
+        return request.get_json()
+
+api.add_resource(VistaPrincipal, '/emparejamiento') 
+
+#Acaba el ejemplo para probar Microservicio Votación

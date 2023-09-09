@@ -14,8 +14,12 @@ class VistaGestorOfertas(Resource):
         
     
         oferta = request.get_json()
+        db.session.add(nueva_oferta)
+        db.session.commit()
+        oferta['idOferta'] = nueva_oferta.id
+
         #Se asigna un recurso a la oferta llamando al validador
-        idRecursoTIAsignado = requests.get('http://127.0.0.1:8901/emparejamiento', oferta)   
+        idRecursoTIAsignado = requests.get('http://127.0.0.1:8901/emparejamiento', json=oferta)   
 
         if 'IdRecursoIT' in idRecursoTIAsignado.json():
             nueva_oferta.idRecursoTI=idRecursoTIAsignado.json()['IdRecursoIT']
@@ -23,9 +27,10 @@ class VistaGestorOfertas(Resource):
             #No se encontro un recureso para la oferta
             print("No se encontro un recureso para la oferta")
             nueva_oferta.idRecursoTI=None
-
+            
         db.session.add(nueva_oferta)
         db.session.commit()
+        
         return oferta_schema.dump(nueva_oferta)
        
     def get(self, id_oferta):

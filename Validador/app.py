@@ -18,7 +18,7 @@ app_context.push()
 
 api = Api(app)
 
-contadorEjecucion = 1
+
 
 class VistaVotacion(Resource):
     def get(self):
@@ -38,28 +38,37 @@ class VistaVotacion(Resource):
         motor3 = requests.get('http://127.0.0.1:7903/emparejamiento', json=data)
 
 
+        motor1 = motor1.json()
+        motor2 = motor2.json()
+        motor3 = motor3.json()
         #Logica de  Validador
         
         def encontrar_recurso(motor1_id,motor2_id,motor3_id):
-            if motor1_id == motor2_id and motor2_id != motor3_id:
-                motor1['statusMotor':'Normal']
-                motor2['statusMotor':'Normal']
-                motor3['statusMotor':'Fallando']
+            if motor1_id == motor2_id == motor3_id:
+                motor1['statusMotor'] = "Normal"
+                motor2['statusMotor'] = "Normal"
+                motor3['statusMotor'] = "Normal"
+                return motor1_id
+            elif motor1_id == motor2_id and motor2_id != motor3_id:
+                motor1['statusMotor'] = "Normal"
+                motor2['statusMotor'] = "Normal"
+                motor3['statusMotor'] = "Fallando"
                 return motor1_id
             elif motor1_id == motor3_id and motor2_id != motor3_id:
-                motor1['statusMotor':'Normal']
-                motor2['statusMotor':'Fallando']
-                motor3['statusMotor':'Normal']                
+                motor1['statusMotor'] = "Normal"
+                motor2['statusMotor'] = "Fallando"
+                motor3['statusMotor'] = "Normal"               
                 return motor1_id
             else:
-                motor1['statusMotor':'Fallando']
-                motor2['statusMotor':'Normal']
-                motor3['statusMotor':'Normal']    
+                motor1['statusMotor'] = "Fallando"
+                motor2['statusMotor'] = "Normal"
+                motor3['statusMotor'] = "Normal"   
                 return motor2_id
-            
-        motor1_id = motor1.json()['IdRecurso']
-        motor2_id = motor2.json()['IdRecurso']
-        motor3_id = motor3.json()['IdRecurso']
+
+          
+        motor1_id = motor1['IdRecurso']
+        motor2_id = motor2['IdRecurso']
+        motor3_id = motor3['IdRecurso']
 
         idRecursoIT = encontrar_recurso(motor1_id,motor2_id,motor3_id)
 
@@ -72,13 +81,11 @@ class VistaVotacion(Resource):
                 "idRecursoTI" : motor['IdRecurso'],
                 "idMotor" : motor["IdentificadorMotor"],
                 "statusMotor" : motor['statusMotor'],
-                "idEjecucionValidador" : contadorEjecucion,
                 "fallaIntroducida":motor['fallaIntroducida']
             }
             #convertir log en una tupla para que vaya a la cola
             args=(
-                log("idEjecucionValidador"),
-                log("fallaIntroducida"),
+                log["fallaIntroducida"],
                 log["idOferta"],
                 log["idRecursoTI"],
                 log["idMotor"],
@@ -86,11 +93,10 @@ class VistaVotacion(Resource):
             #enviar a la cola    
             notificar_csv.apply_async(args, queue='colaValidacion')
 
-        contadorEjecucion+=1
 
         #Retornar IdRecursoIT
-        if idRecursoIT.isnumeric():
-            return {"idRecursoIT":idRecursoIT} 
+        if isinstance(idRecursoIT, int):
+            return {"IdRecursoIT":idRecursoIT} 
         else:
             return {"message":"No hay recursos disponibles para la oferta"}
     

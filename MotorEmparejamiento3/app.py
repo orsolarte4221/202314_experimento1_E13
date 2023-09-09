@@ -10,19 +10,19 @@ app_context = app.app_context()
 app_context.push()
 
 api = Api(app)
-contadorEjecucion = 1
+
 
 class VistaEmparejamiento(Resource):
     def get(self):
         oferta = request.get_json()
-        habilidadRequerida = oferta.json()["habilidad"]
-        calificacionRequerida = oferta.json()["calificacionRequerida"]
-        perfilRequerido = oferta.json()["perfil"]
+        habilidadRequerida = oferta["habilidad"]
+        calificacionRequerida = oferta["calificacionRequerida"]
+        perfilRequerido = oferta["perfil"]
 
         if habilidadRequerida is None or calificacionRequerida is None or perfilRequerido is None:
              return "Error en la solicitud, informacion incompleta", 404
         else:
-            response = requests.get('http://127.0.0.1:5000/recursosTI')
+            response = requests.get('http://127.0.0.1:5901/recursoti')
 
             if response.status_code == 404:
                 return "No se encontraron recursos", 404
@@ -31,24 +31,24 @@ class VistaEmparejamiento(Resource):
             recursoEncontrado=False
             
             fallaIntroducida = False
-            if contadorEjecucion%5 == 0:
+            if oferta['idOferta']%5 == 0:
                 fallaIntroducida = True
             
             if not fallaIntroducida:
                 #Logica para encontrar recurso adecuado
                 for recurso in recursos_ti:
-                    perfil = recurso['perfilRecurso']
+                    perfil = recurso['perfilRecurso']['llave']
                     habilidades = recurso['habilidades']
                     if perfil == perfilRequerido:
                         for habilidad in habilidades:
-                            if habilidad['nombreHabilidad'] == habilidadRequerida and habilidad['calificacionHabilidad'] == calificacionRequerida:
+                            if habilidad['nombreHabilidad']['llave'] == habilidadRequerida and habilidad['calificacionHabilidad'] == calificacionRequerida:
                                 recursoEncontrado = True
                                 break
                         
                         if recursoEncontrado:
                             primer_recurso = recurso
-                            contadorEjecucion+=1
                             break
+            
             else:
                 #Logica para introducir fallo
                 for recurso in recursos_ti:
@@ -63,7 +63,6 @@ class VistaEmparejamiento(Resource):
                     
                     if recursoEncontrado:
                         primer_recurso = recurso
-                        contadorEjecucion+=1
                         break
 
 

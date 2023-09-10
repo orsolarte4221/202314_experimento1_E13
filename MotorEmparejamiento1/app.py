@@ -52,7 +52,7 @@ class VistaEmparejamiento(Resource):
             if primer_recurso:
                 print(primer_recurso)
                 recurso_id = primer_recurso['id']
-                return {"IdRecurso":recurso_id, "IdentificadorMotor":3, "fallaIntroducida": fallaIntroducida}, 200
+                return {"IdRecurso":recurso_id, "IdentificadorMotor":1, "fallaIntroducida": fallaIntroducida}, 200
             else:
                 return {"IdRecurso":"No se encontraron recursos para la oferta", "IdentificadorMotor":3, "fallaIntroducida": fallaIntroducida}, 404
 

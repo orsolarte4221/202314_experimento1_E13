@@ -71,7 +71,7 @@ class VistaEmparejamiento(Resource):
                 recurso_id = primer_recurso['id']
                 return {"IdRecurso":recurso_id, "IdentificadorMotor":3, "fallaIntroducida": fallaIntroducida}, 200
             else:
-                return {"IdRecurso":"No se encontraron recursos para la oferta", "IdentificadorMotor":3}, 404
+                return {"IdRecurso":"No se encontraron recursos para la oferta", "IdentificadorMotor":3, "fallaIntroducida": fallaIntroducida}, 404
 
 
 api.add_resource(VistaEmparejamiento, '/emparejamiento')

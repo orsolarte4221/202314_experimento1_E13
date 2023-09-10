@@ -36,7 +36,6 @@ class VistaEmparejamiento(Resource):
             if not fallaIntroducida:
                 #Logica para encontrar recurso adecuado
                 for recurso in recursos_ti:
-                    print(recurso['id'])
                     perfil = recurso['perfilRecurso']['llave']
                     #print({"Perfil":perfil,"PerfilRequerido":perfilRequerido})
                     habilidades = recurso['habilidades']
@@ -55,6 +54,6 @@ class VistaEmparejamiento(Resource):
                 recurso_id = primer_recurso['id']
                 return {"IdRecurso":recurso_id, "IdentificadorMotor":3, "fallaIntroducida": fallaIntroducida}, 200
             else:
-                return {"IdRecurso":"No se encontraron recursos para la oferta", "IdentificadorMotor":3}, 404
+                return {"IdRecurso":"No se encontraron recursos para la oferta", "IdentificadorMotor":3, "fallaIntroducida": fallaIntroducida}, 404
 
 api.add_resource(VistaEmparejamiento, '/emparejamiento')

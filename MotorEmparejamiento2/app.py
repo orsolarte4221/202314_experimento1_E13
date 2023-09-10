@@ -29,6 +29,7 @@ class VistaEmparejamiento(Resource):
             recursos_ti = response.json()
             recursoEncontrado=False
             fallaIntroducida = False
+            primer_recurso = False
             
             if not fallaIntroducida:
                 #Logica para encontrar recurso adecuado
@@ -37,7 +38,7 @@ class VistaEmparejamiento(Resource):
                     habilidades = recurso['habilidades']
                     if perfil == perfilRequerido:
                         for habilidad in habilidades:
-                            if habilidad['nombreHabilidad']['llave'] == habilidadRequerida and habilidad['calificacionHabilidad'] == calificacionRequerida:
+                            if habilidad['nombreHabilidad']['llave'] == habilidadRequerida and habilidad['calificacionHabilidad'] >= calificacionRequerida:
                                 recursoEncontrado = True
                                 break
                         

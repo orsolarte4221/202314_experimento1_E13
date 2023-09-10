@@ -31,16 +31,18 @@ class VistaEmparejamiento(Resource):
             recursos_ti = response.json()
             recursoEncontrado=False
             fallaIntroducida = False
+            primer_recurso = False
             
             if not fallaIntroducida:
                 #Logica para encontrar recurso adecuado
                 for recurso in recursos_ti:
+                    print(recurso['id'])
                     perfil = recurso['perfilRecurso']['llave']
                     #print({"Perfil":perfil,"PerfilRequerido":perfilRequerido})
                     habilidades = recurso['habilidades']
                     if perfil == perfilRequerido:
                         for habilidad in habilidades:
-                            if habilidad['nombreHabilidad']['llave'] == habilidadRequerida and habilidad['calificacionHabilidad'] == calificacionRequerida:
+                            if habilidad['nombreHabilidad']['llave'] == habilidadRequerida and habilidad['calificacionHabilidad'] >= calificacionRequerida:
                                 recursoEncontrado = True
                                 break
                         

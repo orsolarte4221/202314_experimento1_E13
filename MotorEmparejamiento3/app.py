@@ -18,6 +18,7 @@ class VistaEmparejamiento(Resource):
         habilidadRequerida = oferta["habilidad"]
         calificacionRequerida = oferta["calificacionRequerida"]
         perfilRequerido = oferta["perfil"]
+        primer_recurso = False
 
         if habilidadRequerida is None or calificacionRequerida is None or perfilRequerido is None:
              return "Error en la solicitud, informacion incompleta", 404
@@ -41,7 +42,7 @@ class VistaEmparejamiento(Resource):
                     habilidades = recurso['habilidades']
                     if perfil == perfilRequerido:
                         for habilidad in habilidades:
-                            if habilidad['nombreHabilidad']['llave'] == habilidadRequerida and habilidad['calificacionHabilidad'] == calificacionRequerida:
+                            if habilidad['nombreHabilidad']['llave'] == habilidadRequerida and habilidad['calificacionHabilidad'] >= calificacionRequerida:
                                 recursoEncontrado = True
                                 break
                         
@@ -57,7 +58,7 @@ class VistaEmparejamiento(Resource):
                     if perfil != perfilRequerido:
                         recursoEncontrado = True
                     for habilidad in habilidades:
-                        if habilidad['nombreHabilidad'] != habilidadRequerida or habilidad['calificacionHabilidad'] == calificacionRequerida:
+                        if habilidad['nombreHabilidad'] != habilidadRequerida or habilidad['calificacionHabilidad'] != calificacionRequerida:
                             recursoEncontrado = True
                             break
                     

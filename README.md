@@ -33,8 +33,9 @@ Ejemplo:
 <img width="856" alt="image" src="https://github.com/orsolarte4221/202314_experimento1_E13/assets/123704723/27263842-516c-4dcc-b48a-bbf2439734fb">
 
 Ejemplo Respuesta:
+Se devuelve la oferta como confirmación de que el registro en la base de datos ha sido exitoso.
 
-Si el motor emparejamiento encuentra un recurso que se ajuste a la oferta idRecursoTI tendrá un valor numérico, de lo contrario sera un valor Nulo.
+Si el motor emparejamiento encuentra un recurso que se ajuste a la oferta, "idRecursoTI" tendrá un valor numérico, de lo contrario sera un valor Nulo.
 
 <img width="697" alt="image" src="https://github.com/orsolarte4221/202314_experimento1_E13/assets/123704723/c48ed02b-ce25-4836-8ece-541f1b93b002">
 
